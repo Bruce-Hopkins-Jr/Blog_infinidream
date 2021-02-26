@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}, a test for Infinidreams
+
+  if error
+    p There was an error
+  else
+    p The post count: !{data.posts_count}
+    each post in data.posts_find
+      p
+        a(href=post.url) URL
