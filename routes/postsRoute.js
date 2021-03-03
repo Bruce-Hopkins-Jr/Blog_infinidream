@@ -43,17 +43,13 @@ router.get('/create/post', posts_controller.get_create_post);
 router.post('/create/post', posts_controller.post_create_post);
 
 
-// Get delete post
 router.post('/delete/post/:id', posts_controller.post_delete_post);
 
-// Post delete post
-// router.post('/post/delete', posts_controller.post_delete_post);
-
 // Get update post
-// router.get('/post/update', posts_controller.get_update_post)
+router.get('/post/update', posts_controller.get_update_post)
 
 // Post update post
-// router.post('/post/update', posts_controller.post_update_post)
+router.post('/post/update', posts_controller.post_update_post)
 
 
 

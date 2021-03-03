@@ -137,7 +137,61 @@ exports.post_delete_post = function(req, res) {
         }
     }); 
 
-}
+};
+
+exports.get_update_post = this.get_post;
+
+exports.post_update_post = [
+
+    upload.single('image'),
+    body('title').trim().isLength({ min: 1 }).escape().withMessage('Title must be specified.'),
+    body('tags.*').escape(),
+    body('summary').trim().isLength({ min: 1 }).escape().withMessage('Summary must be specified.'),
+    body('body.*').trim().isLength({ min: 1 }).escape().withMessage('Title must be specified.'),
+
+    (req, res, next) => {
+
+    
+        // Extract the validation errors from a request.
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            // There are errors. Render form again with sanitized values/errors messages.
+            res.render('test', { title: 'Error', errors: errors.array() });
+            return;
+        }
+        else {
+            var imagePath
+            try {
+                imagePath = {
+                    data: fs.readFileSync(path.join(appRoot + '/uploads/' + req.file.filename)),
+                    contentType: 'image/png'
+                }
+
+            } catch {
+                imagePath = ''
+            }
+
+            var post = new Posts(
+                {
+                    title: req.body.title,
+                    tags: req.body.tags,
+                    summary: req.body.summary,
+                    body: req.body.body,
+                    date_of_post: Date.now(),
+                    thumbnail: imagePath
+                })
+                /* */
+            Posts.findByIdAndUpdate(req.params.id, post, {}, function (err, thepost) {
+                if (err) { return next(err); }
+                // Successful - redirect to new author record.
+                res.redirect(post.url);
+            });
+
+        }
+   }
+
+]
 
 
 
