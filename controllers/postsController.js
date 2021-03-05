@@ -139,7 +139,19 @@ exports.post_delete_post = function(req, res) {
 
 };
 
-exports.get_update_post = this.get_post;
+exports.get_update_post = function(req, res) {
+    Posts.findById(req.params.id)
+    .exec(function (err, blogpost) {
+        if (err) { return next(err); }
+        if (blogpost) {
+            res.render('test', { title: 'Update page', post: blogpost});
+        } else {
+            res.status(404).json({message: "Post not found"})
+            res.status(404)
+            throw new Error('Post not found')
+        }
+    }); 
+}
 
 exports.post_update_post = [
 
@@ -179,7 +191,8 @@ exports.post_update_post = [
                     summary: req.body.summary,
                     body: req.body.body,
                     date_of_post: Date.now(),
-                    thumbnail: imagePath
+                    thumbnail: imagePath,
+                    _id: req.params.id,
                 })
                 /* */
             Posts.findByIdAndUpdate(req.params.id, post, {}, function (err, thepost) {

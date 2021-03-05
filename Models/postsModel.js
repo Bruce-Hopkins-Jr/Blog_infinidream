@@ -17,7 +17,7 @@ var PostsSchema = new Schema(
 PostsSchema
 .virtual('url')
 .get(function () {
-  return '/api/post/' + this._id;
+  return '/api/posts/' + this._id;
 });
 
 //Export model
