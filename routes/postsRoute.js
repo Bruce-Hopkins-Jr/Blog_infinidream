@@ -33,23 +33,28 @@ router.get('/', posts_controller.index);
 router.get('/posts', posts_controller.get_all_posts);
 
 //get individual post
-router.get('/post/:id', posts_controller.get_post);
+router.get('/posts/:id', posts_controller.get_post);
 
 // get form
-router.get('/create/post', posts_controller.get_create_post);
+router.get('/post/create', posts_controller.get_create_post);
 
 
 // Create post
-router.post('/create/post', posts_controller.post_create_post);
+router.post('/post/create', posts_controller.post_create_post);
 
+// TEMPORY DELETE
+router.get('/post/:id/delete', function(req, res) {
+    res.send('Are you sure you want to delete: ' + req.params.id + "?")
+})
 
-router.post('/delete/post/:id', posts_controller.post_delete_post);
+// Delete post
+router.post('/post/:id/delete', posts_controller.post_delete_post);
 
 // Get update post
-router.get('/post/update', posts_controller.get_update_post)
+router.get('/post/:id/update', posts_controller.get_update_post)
 
 // Post update post
-router.post('/post/update', posts_controller.post_update_post)
+router.post('/post/:id/update', posts_controller.post_update_post)
 
 
 
