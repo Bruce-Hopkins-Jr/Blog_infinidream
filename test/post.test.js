@@ -8,6 +8,7 @@ var server = require('../app');
 
 var fs  = require('fs')
 const blogpostExample = require('./exampleposts/createpost1.json')
+const blogpostExample2 = require('./exampleposts/updatepost.json')
 
 var bitmap = fs.readFileSync('test/exampleposts/image-1614871205433');
 var image = {
@@ -57,6 +58,7 @@ describe('Blogposts', () => {
   }
   let id;
 
+  // POST
   describe('/POST blogposts', () => {
 
     it('it should be able to post the blog and have all properties', (done) => {
@@ -94,6 +96,7 @@ describe('Blogposts', () => {
 
   });
 
+  // GET 
   describe('/GET blogposts', () => {
     it('it should GET all the posts', (done) => {
       chai.request(server)
@@ -113,6 +116,7 @@ describe('Blogposts', () => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('title');
+                res.body.should.have.property("summary")
                 res.body.should.have.property('body');
                 res.body.should.have.property('tags');
                 res.body.should.have.property('date_of_post');
@@ -120,4 +124,77 @@ describe('Blogposts', () => {
           });
     });
   });
-})
+
+    // UPDATE 
+    describe('/UPDATE blogposts', () => {
+      
+      const updatedPost = {
+        title: blogpostExample2.title,
+        tags: blogpostExample2.tags,
+        body: blogpostExample2.body,
+        summary: blogpostExample2.summary,
+      }
+      console.log(updatedPost)
+      it('it should be able to UPDATE the last post', (done) => {
+        chai.request(server)
+        .post('/api/post/'+ id +'/update')
+        .field('Content-Type', 'multipart/form-data')
+        .field(updatedPost)
+        // .attach('image', 'test/exampleposts/face.png')
+        .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.be.a('object');
+
+              res.body.should.have.property('title');
+              res.body.title.should.be.eql(updatedPost.title)
+
+              res.body.should.have.property('body');
+              res.body.body.should.be.eql(updatedPost.body)
+
+              res.body.should.have.property('summary');
+              res.body.summary.should.be.eql(updatedPost.summary)
+
+              res.body.should.have.property('tags');
+              res.body.tags.should.be.a('array')
+
+              res.body.should.have.property('date_of_post');
+              // res.body.should.have.property('thumbnail');
+          done();
+        });
+        
+      });
+
+    });
+
+  // DELETE 
+
+  describe('/DELETE blogposts', () => {
+
+    it('it should DELETE without error', (done) => {
+      chai.request(server)
+      .post('/api/post/'+ id +'/delete')
+      .end((err, res) => {
+            res.should.have.status(200);
+        done();
+      });      
+    });
+
+      it('it should GET and return no posts', (done) => {
+        chai.request(server)
+          .get('/api/posts')
+          .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('array');
+                res.body.length.should.be.eql(0)
+            done();
+          });
+      });
+    
+    
+  });
+
+
+
+});
+
+
