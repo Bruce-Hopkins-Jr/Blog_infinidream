@@ -35,7 +35,7 @@ exports.index = function(req, res) {
     }, function(err, results) {
         res.render('index', { title: 'Home page', error: err, data: results });
     });
-};
+}; // for testing
 
 exports.get_all_posts = function(req, res) {
     Posts.find()
@@ -66,7 +66,7 @@ exports.get_post = function(req, res, next) {
 }
 exports.get_create_post = function(req, res, next) {
     res.render('test', { title: 'Home page' });
-}
+} // for testing
 
 exports.post_create_post = [
     
