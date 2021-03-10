@@ -9,12 +9,6 @@ var server = require('../app');
 var fs = require('fs')
 const blogpostExample = require('./exampleposts/createpost1.json')
 const blogpostExample2 = require('./exampleposts/updatepost.json');
-var bitmap = fs.readFileSync('test/exampleposts/image-1614871205433');
-var image = {
-  data: fs.readFileSync('test/exampleposts/face.png'),
-  contentType: 'image/png'
-}
-
 
 describe("Connects to database", function () {
   it("Should connect without error", function () {
@@ -26,10 +20,7 @@ describe("Connects to database", function () {
       db.on('error', console.error.bind(console, 'MongoDB connection error:'));
     }
     catch {
-      expect(false).to.equal(true);
-    }
-    finally {
-      expect(true).to.equal(true);
+      throw new Error('Cannot connect to database');
     }
   });
 });
@@ -73,7 +64,7 @@ describe('Blogposts', () => {
           res.body.should.have.property('body');
           res.body.should.have.property('tags');
           res.body.should.have.property('date_of_post');
-          res.body.should.have.property('thumbnail');
+          // res.body.should.have.property('thumbnail');
           id = res.body._id;
           done();
         });
@@ -125,14 +116,12 @@ describe('Blogposts', () => {
 
   // UPDATE 
   describe('/UPDATE blogposts', () => {
-
     const updatedPost = {
       title: blogpostExample2.title,
       tags: blogpostExample2.tags,
       body: blogpostExample2.body,
       summary: blogpostExample2.summary,
     }
-    console.log(updatedPost)
     it('it should be able to UPDATE the last post', (done) => {
       chai.request(server)
         .post('/api/post/' + id + '/update')
