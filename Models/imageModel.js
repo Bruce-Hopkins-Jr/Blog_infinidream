@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
-
 var Schema = mongoose.Schema;
 
 var PostsSchema = new Schema(
   {
-    thumbnail: { data: Buffer, contentType: String },
+    image: { data: Buffer, contentType: String },
+    name: {type: String},
   }
 );
 
@@ -12,8 +12,8 @@ var PostsSchema = new Schema(
 PostsSchema
 .virtual('url')
 .get(function () {
-  return '/api/posts/' + this._id;
+  return '/api/posts/' + this.name;
 });
 
 //Export model
-module.exports = mongoose.model('Posts', PostsSchema);
+module.exports = mongoose.model('Image', PostsSchema);
