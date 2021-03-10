@@ -20,10 +20,7 @@ describe("Connects to database", function () {
       db.on('error', console.error.bind(console, 'MongoDB connection error:'));
     }
     catch {
-      expect(false).to.equal(true);
-    }
-    finally {
-      expect(true).to.equal(true);
+      throw new Error('Cannot connect to database');
     }
   });
 });
@@ -119,14 +116,12 @@ describe('Blogposts', () => {
 
   // UPDATE 
   describe('/UPDATE blogposts', () => {
-
     const updatedPost = {
       title: blogpostExample2.title,
       tags: blogpostExample2.tags,
       body: blogpostExample2.body,
       summary: blogpostExample2.summary,
     }
-    console.log(updatedPost)
     it('it should be able to UPDATE the last post', (done) => {
       chai.request(server)
         .post('/api/post/' + id + '/update')
@@ -150,7 +145,7 @@ describe('Blogposts', () => {
           res.body.tags.should.be.a('array')
 
           res.body.should.have.property('date_of_post');
-          res.body.should.have.property('thumbnail');
+          // res.body.should.have.property('thumbnail');
           done();
         });
 

@@ -10,24 +10,15 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-var Posts = require('../Models/postsModel')
 var posts_controller = require('../controllers/postsController')
-
-var appDir = path.dirname(require.main.filename);
-
-var storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads')
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.fieldname + '-' + Date.now())
-    }
-});
- 
-var upload = multer({ storage: storage });
+var image_controller = require('../controllers/imageController')
 
 // index
 router.get('/', posts_controller.index);
+
+/*
+    Blogposts
+*/
 
 // get all posts
 router.get('/posts', posts_controller.get_all_posts);
@@ -42,7 +33,7 @@ router.get('/post/create', posts_controller.get_create_post);
 // Create post
 router.post('/post/create', posts_controller.post_create_post);
 
-// TEMPORY DELETE
+// TEMPORARY DELETE
 router.get('/post/:id/delete', function(req, res) {
     res.send('Are you sure you want to delete: ' + req.params.id + "?")
 })
@@ -55,6 +46,20 @@ router.get('/post/:id/update', posts_controller.get_update_post)
 
 // Post update post
 router.post('/post/:id/update', posts_controller.post_update_post)
+
+
+/* 
+    Images
+*/
+
+router.get('/images', image_controller.get_all_images);
+
+router.get('/image/:name', image_controller.get_image);
+
+router.post('/image', image_controller.post_images);
+
+router.post('/image/:name/delete', image_controller.delete_image);
+
 
 
 
