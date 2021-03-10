@@ -9,12 +9,6 @@ var server = require('../app');
 var fs = require('fs')
 const blogpostExample = require('./exampleposts/createpost1.json')
 const blogpostExample2 = require('./exampleposts/updatepost.json');
-var bitmap = fs.readFileSync('test/exampleposts/image-1614871205433');
-var image = {
-  data: fs.readFileSync('test/exampleposts/face.png'),
-  contentType: 'image/png'
-}
-
 
 describe("Connects to database", function () {
   it("Should connect without error", function () {
@@ -68,11 +62,11 @@ describe('Blogposts', () => {
         // .attach('image', 'test/exampleposts/face.png')
         .end((err, res) => {
           res.should.have.status(200);
-          // res.body.should.be.a('object');
-          // res.body.should.have.property('title');
-          // res.body.should.have.property('body');
-          // res.body.should.have.property('tags');
-          // res.body.should.have.property('date_of_post');
+          res.body.should.be.a('object');
+          res.body.should.have.property('title');
+          res.body.should.have.property('body');
+          res.body.should.have.property('tags');
+          res.body.should.have.property('date_of_post');
           // res.body.should.have.property('thumbnail');
           id = res.body._id;
           done();
@@ -86,9 +80,9 @@ describe('Blogposts', () => {
         .send(errorPost)
         .end((err, res) => {
           res.should.have.status(200);
-          // res.body.should.be.a('object');
-          // res.body.should.not.have.property('tags')
-          // res.body.should.not.have.property('body')
+          res.body.should.be.a('object');
+          res.body.should.not.have.property('tags')
+          res.body.should.not.have.property('body')
           done();
         });
     });
@@ -156,7 +150,7 @@ describe('Blogposts', () => {
           res.body.tags.should.be.a('array')
 
           res.body.should.have.property('date_of_post');
-          // res.body.should.have.property('thumbnail');
+          res.body.should.have.property('thumbnail');
           done();
         });
 
