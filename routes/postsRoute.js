@@ -56,8 +56,6 @@ router.post('/post/:id/update', posts_controller.post_update_post)
 
 router.get('/images', image_controller.get_all_images);
 
-router.get('/image/:name', image_controller.get_image);
-
 router.get('/create-image', image_controller.get_create_images);
 
 router.post('/create-image', image_controller.post_create_images);

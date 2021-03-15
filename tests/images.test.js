@@ -25,33 +25,12 @@ describe("Connects to database", function () {
 
 Image.remove({}, (err) => {});
 describe('Images', () => {
-
-    describe('/GET all images', () => {
-        it('it should get 200', (done) => {
-          chai.request(server)
-            .get('/api/images')
-            .end((err, res) => {
-              res.should.have.status(200);
-              done();
-            });
-        });
-    })
-
-    describe('/GET image', () => {
-        it('it should get 200', (done) => {
-          chai.request(server)
-            .get('/api/image/thisname')
-            .end((err, res) => {
-              res.should.have.status(200);
-              done();
-            });
-        });
-    })
+    // POST image
     let name = {
       name: "ThisImage"
     }
     describe('/POST image', () => {
-        it('it should get 200', (done) => {
+        it('it should POST', (done) => {
           chai.request(server)
             .post('/api/create-image')
             .field('Content-Type', 'multipart/form-data')
@@ -59,7 +38,6 @@ describe('Images', () => {
             .attach('image', 'tests/exampleposts/Section.jpeg')
             .end((err, res) => {
               res.should.have.status(200);
-              console.log(res.text)
               
               res.on('error', err => {
                 console.error(err)
@@ -68,17 +46,46 @@ describe('Images', () => {
             });
         });
     })
+    // GET an array of image paths
+    describe('/GET all images', () => {
+      it('it should get an array', (done) => {
+        chai.request(server)
+          .get('/api/images') 
+          .end((err, res) => {
+            res.body.should.be.a('array');
+            res.should.have.status(200);
+            res.body.length.should.be.eql(1);
+            done();
+          });
+      });
+    })
 
+    // DELETE image and database instance
     describe('/DELETE image', () => {
-        it('it should get 200', (done) => {
+        it('it should DELETE the image', (done) => {
           chai.request(server)
-            .post('/api/image/thisname/delete')
+            .post('/api/image/ThisImage.jpeg/delete')
             .end((err, res) => {
               res.should.have.status(200);
               done();
             });
         });
     })
+
+    // GET an empty array
+    describe('/GET all images', () => {
+      it('it should be an empty array', (done) => {
+        chai.request(server)
+          .get('/api/images') 
+          .end((err, res) => {
+            res.body.should.be.a('array');
+            res.should.have.status(200);
+            res.body.length.should.be.eql(0);
+            done();
+          });
+      });
+    })
+    
 
 
 })
