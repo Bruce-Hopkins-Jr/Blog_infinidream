@@ -3,7 +3,7 @@ let chaiHttp = require('chai-http');
 let expect = chai.expect;
 let should = chai.should();
 
-var Posts = require('../Models/postsModel')
+var Posts = require('../models/postsModel')
 var server = require('../app');
 
 var fs = require('fs')

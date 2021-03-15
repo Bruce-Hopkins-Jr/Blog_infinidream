@@ -47,13 +47,23 @@ describe('Images', () => {
             });
         });
     })
-
+    let name = {
+      name: "ThisImage"
+    }
     describe('/POST image', () => {
         it('it should get 200', (done) => {
           chai.request(server)
-            .post('/api/image')
+            .post('/api/create-image')
+            .field('Content-Type', 'multipart/form-data')
+            .field(name)
+            .attach('image', 'tests/exampleposts/Section.jpeg')
             .end((err, res) => {
               res.should.have.status(200);
+              console.log(res.text)
+              
+              res.on('error', err => {
+                console.error(err)
+              })
               done();
             });
         });

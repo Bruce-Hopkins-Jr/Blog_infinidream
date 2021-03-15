@@ -1,4 +1,3 @@
-var Posts = require('../Models/postsModel')
 var async = require('async');
 const { body,validationResult } = require("express-validator");
 var multer = require('multer');
@@ -6,6 +5,8 @@ var fs = require('fs');
 var path = require('path');
 var express = require('express');
 var bodyParser = require('body-parser');
+
+var Posts = require('../models/postsModel')
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: false }))

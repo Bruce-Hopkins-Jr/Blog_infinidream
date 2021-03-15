@@ -13,6 +13,8 @@ app.use(bodyParser.json())
 var posts_controller = require('../controllers/postsController')
 var image_controller = require('../controllers/imageController')
 
+var upload = multer({dest: 'public/images'});
+
 // index
 router.get('/', posts_controller.index);
 
@@ -56,7 +58,14 @@ router.get('/images', image_controller.get_all_images);
 
 router.get('/image/:name', image_controller.get_image);
 
-router.post('/image', image_controller.post_images);
+router.get('/create-image', image_controller.get_create_images);
+
+router.post('/create-image', image_controller.post_create_images);
+
+
+
+
+
 
 router.post('/image/:name/delete', image_controller.delete_image);
 

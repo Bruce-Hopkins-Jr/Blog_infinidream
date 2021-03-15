@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "devstart": "nodemon ./bin/www",
     "serverstart": "DEBUG=infinidreams:* npm run devstart",
-    "test": "mocha"
+    "tests": "mocha --recursive tests --exit"
   },
   "dependencies": {
     "@okta/oidc-middleware": "^4.0.3",
