@@ -22,7 +22,7 @@ exports.get_all_images = function(req, res) {
 exports.get_create_images = function(req, res) {
     res.render('imageTest', { title: 'Create Image'});
 }
-
+//
 exports.post_create_images = [
     upload.single('image'),
     body('name').trim().isLength({ min: 1 }).escape().withMessage('Name must be specified'),
