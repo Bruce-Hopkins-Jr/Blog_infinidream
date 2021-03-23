@@ -148,6 +148,7 @@ describe('Blogposts', () => {
           // res.body.should.have.property('thumbnail');
           done();
         });
+        // TODO Add GET method
 
     });
 

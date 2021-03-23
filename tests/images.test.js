@@ -22,7 +22,7 @@ describe("Connects to database", function () {
       }
     });
 });
-
+// 
 Image.remove({}, (err) => {});
 describe('Images', () => {
     // POST image
