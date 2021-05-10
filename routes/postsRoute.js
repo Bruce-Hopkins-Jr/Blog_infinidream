@@ -13,13 +13,18 @@ app.use(bodyParser.json())
 var posts_controller = require('../controllers/postsController')
 var image_controller = require('../controllers/imageController')
 
-// index
-router.get('/', posts_controller.index);
+var session = require('express-session');
+app.use(session({secret: "fb!ywefjh3v908#"}));
+
+
+var upload = multer({dest: 'public/images'});
+
 
 /*
     Blogposts
 */
 
+// TODO, finished adding validation
 // get all posts
 router.get('/posts', posts_controller.get_all_posts);
 
@@ -27,7 +32,7 @@ router.get('/posts', posts_controller.get_all_posts);
 router.get('/posts/:id', posts_controller.get_post);
 
 // get form
-router.get('/post/create', posts_controller.get_create_post);
+router.get('/post/create',  posts_controller.get_create_post);
 
 
 // Create post
@@ -52,11 +57,12 @@ router.post('/post/:id/update', posts_controller.post_update_post)
     Images
 */
 
+//TODO, Add validation to images
 router.get('/images', image_controller.get_all_images);
 
-router.get('/image/:name', image_controller.get_image);
+router.get('/create-image', image_controller.get_create_images);
 
-router.post('/image', image_controller.post_images);
+router.post('/create-image', image_controller.post_create_images);
 
 router.post('/image/:name/delete', image_controller.delete_image);
 

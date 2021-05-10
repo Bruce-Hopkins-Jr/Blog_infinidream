@@ -1,4 +1,3 @@
-var Posts = require('../Models/postsModel')
 var async = require('async');
 const { body,validationResult } = require("express-validator");
 var multer = require('multer');
@@ -6,10 +5,21 @@ var fs = require('fs');
 var path = require('path');
 var express = require('express');
 var bodyParser = require('body-parser');
+const utf8 = require('utf8');
+
+var Posts = require('../models/postsModel')
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+
+var session = require('express-session');
+app.use(session({secret: "fb!ywefjh3v908#"}));
+
+let adminInfo = {
+    user: "Admin",
+    password: "oU0mN2zB5a4H"
+}
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -21,7 +31,6 @@ var storage = multer.diskStorage({
 });
  
 var upload = multer({ storage: storage });
-
 
 exports.index = function(req, res) {
 
@@ -37,19 +46,20 @@ exports.index = function(req, res) {
     });
 }; // for testing
 
+
 exports.get_all_posts = function(req, res) {
     Posts.find()
     .exec(function (err, results) {
         if (err) { return next(err); }
         if (results) {
-            res.json(results)
+            res.send(results)
         } else {
             res.status(404).json({message: "Posts not found"})
             res.status(404)
-            throw new Error('Post not found')
         }
     }); 
 };
+
 
 exports.get_post = function(req, res, next) {
     Posts.findById(req.params.id)
@@ -60,17 +70,16 @@ exports.get_post = function(req, res, next) {
         } else {
             res.status(404).json({message: "Post not found"})
             res.status(404)
-            throw new Error('Post not found')
         }
     }); 
+
 }
 exports.get_create_post = function(req, res, next) {
     res.render('test', { title: 'Home page' });
 } // for testing
 
-exports.post_create_post = [
-    
 
+exports.post_create_post = [
     upload.single('image'),
     body('title').trim().isLength({ min: 1 }).escape().withMessage('Title must be specified.'),
     body('tags.*').escape(),
@@ -78,8 +87,7 @@ exports.post_create_post = [
     body('body.*').trim().isLength({ min: 1 }).escape().withMessage('Title must be specified.'),
 
     (req, res, next) => {
-
-    
+        
         // Extract the validation errors from a request.
         const errors = validationResult(req);
 
@@ -109,15 +117,14 @@ exports.post_create_post = [
                     date_of_post: Date.now(),
                     thumbnail: imagePath
                 })
-                /* */
             post.save(function (err) {
                 if (err) { return next(err); }
-                // Successful - redirect to new author record.
-                res.redirect(post.url);
+                res.send(post._id)
             });
 
         }
-   }
+    }
+
 ]
 
 exports.post_delete_post = function(req, res) {
@@ -127,13 +134,13 @@ exports.post_delete_post = function(req, res) {
         if (results) {
             Posts.findByIdAndRemove(req.params.id, function deletePost(err) {
                 if (err) { return next(err); }
-                // Success - go to genre list
+                //TODO, have uploaded image also deleted
                 res.redirect('/')
             })
         } else {
             res.status(404).json({message: "Post not found"})
             res.status(404)
-            throw new Error('Post not found')
+            
         }
     }); 
 
@@ -148,7 +155,7 @@ exports.get_update_post = function(req, res) {
         } else {
             res.status(404).json({message: "Post not found"})
             res.status(404)
-            throw new Error('Post not found')
+            
         }
     }); 
 }
@@ -197,8 +204,7 @@ exports.post_update_post = [
                 /* */
             Posts.findByIdAndUpdate(req.params.id, post, {}, function (err, thepost) {
                 if (err) { return next(err); }
-                // Successful - redirect to new author record.
-                res.redirect(post.url);
+                res.send(thepost)
             });
 
         }

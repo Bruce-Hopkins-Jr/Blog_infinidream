@@ -3,17 +3,19 @@ var Schema = mongoose.Schema;
 
 var PostsSchema = new Schema(
   {
-    image: { data: Buffer, contentType: String },
+    // image: { data: Buffer, contentType: String },
     name: {type: String},
   }
 );
 
 // Virtual for author's URL
+
 PostsSchema
-.virtual('url')
+.virtual('path')
 .get(function () {
-  return '/api/posts/' + this.name;
+  return '/images/' + this.name;
 });
+
 
 //Export model
 module.exports = mongoose.model('Image', PostsSchema);

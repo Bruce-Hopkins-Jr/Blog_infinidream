@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var dotenv = require('dotenv')
 var cors = require('cors')
+var session = require('express-session');
+
 
 var indexRouter = require('./routes/index');
 var postsRouter = require('./routes/postsRoute');
@@ -28,6 +30,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({secret: "fb!ywefjh3v908#"}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
