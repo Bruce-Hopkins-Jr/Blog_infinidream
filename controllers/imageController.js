@@ -1,18 +1,9 @@
-var express = require('express');
-var app = express(); 
 var multer = require('multer');
 var fs = require('fs');
 var path = require('path');
-var bodyParser = require('body-parser');
 const { body,validationResult } = require("express-validator");
 
 var Image = require("../models/imageModel")
-
-var app = express();
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
-
-
 var upload = multer({dest: 'public/images'});
 
 exports.get_all_images = function(req, res) {
@@ -34,7 +25,7 @@ exports.get_create_images = function(req, res) {
 }
 exports.post_create_images = [
     upload.single('image'),
-    body('name').trim().isLength({ min: 1 }).escape().withMessage('Name must be specified'),
+    body('name').trim().isLength({ min: 1 }).withMessage('Name must be specified'),
 
 
     (req, res, next) => {
@@ -82,20 +73,27 @@ exports.delete_image = function(req, res, next) {
     Image.findOne({'name': req.params.name})
     .exec(function (err, image){
         if (err) { return next(err); }
+        else if (image) {
+            let targetPath = path.resolve(appRoot + '/public/images/' + image.name);
         
-        let targetPath = path.resolve(appRoot + '/public/images/' + image.name);
-        
-        //  Delete file
-        fs.unlink(targetPath,function(){
+            //  Delete file
+            fs.unlink(targetPath,function(){
+    
+                if(err) console.error(err) 
+    
+                //Delete database intance
+                Image.findByIdAndRemove(image.id, function deletePost(err) {
+                    if (err) { return next(err); }
+                    res.redirect('/api/images')
+                })
+            });
 
-            if(err) console.error(err) 
+        } else {
+            res.status(404);
+            res.send("That image doesn't exist")
+        }
 
-            //Delete database intance
-            Image.findByIdAndRemove(image.id, function deletePost(err) {
-                if (err) { return next(err); }
-                res.redirect('/')
-            })
-        });
+
     })
     
 }

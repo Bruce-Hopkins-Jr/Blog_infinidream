@@ -1,2 +1,7 @@
-node_modules/
-uploads/
+/.DS_Store
+/node_modules
+/public
+/contollers
+/uploads
+/config
+/.vscode

@@ -2,11 +2,13 @@ let chai = require('chai');
 let chaiHttp = require('chai-http');
 let expect = chai.expect;
 let should = chai.should();
+var request = require('supertest');
 
 var Image = require('../models/imageModel')
 
 var fs = require('fs')
 var server = require('../app');
+var config = require('../config/adminInfo.json')
 
 describe("Connects to database", function () {
     it("Should connect without error", function () {
@@ -23,6 +25,22 @@ describe("Connects to database", function () {
     });
 });
 
+let adminInfo = {
+  user: config.user,
+  password: config.password
+}
+// Before every test authenticate the user
+var authenticatedUser = request.agent(server);
+before(function(done){
+  authenticatedUser
+    .post('/api/login')
+    .send(adminInfo)
+    .end(function(err, response){
+      expect(response.statusCode).to.equal(200);
+      done();
+    });
+});
+
 Image.remove({}, (err) => {});
 describe('Images', () => {
     // POST image
@@ -31,13 +49,13 @@ describe('Images', () => {
     }
     describe('/POST image', () => {
         it('it should POST', (done) => {
-          chai.request(server)
+          authenticatedUser
             .post('/api/create-image')
             .field('Content-Type', 'multipart/form-data')
             .field(name)
             .attach('image', 'tests/exampleposts/Section.jpeg')
             .end((err, res) => {
-              res.should.have.status(200);
+              res.should.have.status(302);
               
               res.on('error', err => {
                 console.error(err)
@@ -49,7 +67,7 @@ describe('Images', () => {
     // GET an array of image paths
     describe('/GET all images', () => {
       it('it should get an array', (done) => {
-        chai.request(server)
+        authenticatedUser
           .get('/api/images') 
           .end((err, res) => {
             res.body.should.be.a('array');
@@ -63,10 +81,10 @@ describe('Images', () => {
     // DELETE image and database instance
     describe('/DELETE image', () => {
         it('it should DELETE the image', (done) => {
-          chai.request(server)
+          authenticatedUser
             .post('/api/image/ThisImage.jpeg/delete')
             .end((err, res) => {
-              res.should.have.status(200);
+              res.should.have.status(302);
               done();
             });
         });
@@ -75,7 +93,7 @@ describe('Images', () => {
     // GET an empty array
     describe('/GET all images', () => {
       it('it should be an empty array', (done) => {
-        chai.request(server)
+        authenticatedUser
           .get('/api/images') 
           .end((err, res) => {
             res.body.should.be.a('array');

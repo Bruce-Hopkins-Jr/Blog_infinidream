@@ -1,122 +1,105 @@
-var async = require('async');
 const { body,validationResult } = require("express-validator");
 var multer = require('multer');
 var fs = require('fs');
 var path = require('path');
-var express = require('express');
-var bodyParser = require('body-parser');
-const utf8 = require('utf8');
 
 var Posts = require('../models/postsModel')
 
-var app = express();
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
-
-var session = require('express-session');
-app.use(session({secret: "fb!ywefjh3v908#"}));
-
-let adminInfo = {
-    user: "Admin",
-    password: "oU0mN2zB5a4H"
-}
-
+// Image upload config
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads')
     },
     filename: (req, file, cb) => {
-        cb(null, file.fieldname + '-' + Date.now())
+        cb(null, file.originalname + '-' + Date.now())
     }
 });
- 
 var upload = multer({ storage: storage });
 
-exports.index = function(req, res) {
 
-    async.parallel({
-        posts_count: function(callback) {
-            Posts.countDocuments({}, callback); // Pass an empty object as match condition to find all documents of this collection
-        },
-        posts_find: function(callback) {
-            Posts.find({}, callback);
-        }
-    }, function(err, results) {
-        res.render('index', { title: 'Home page', error: err, data: results });
-    });
-}; // for testing
-
-
+// GET all the posts of the blog. Sorts the posts by the latest post first.
 exports.get_all_posts = function(req, res) {
     Posts.find()
+    .sort({_id:-1})
     .exec(function (err, results) {
-        if (err) { return next(err); }
-        if (results) {
-            res.send(results)
-        } else {
+        if (err) return next(err);
+        if (results) res.send(results)
+        else {
             res.status(404).json({message: "Posts not found"})
             res.status(404)
         }
     }); 
 };
 
-
+// GET a specific post
 exports.get_post = function(req, res, next) {
     Posts.findById(req.params.id)
     .exec(function (err, results) {
-        if (err) { return next(err); }
-        if (results) {
-            res.json(results)
-        } else {
+        if (err) return next(err);
+        if (results) res.json(results)
+        else {
             res.status(404).json({message: "Post not found"})
             res.status(404)
         }
     }); 
 
 }
-exports.get_create_post = function(req, res, next) {
-    res.render('test', { title: 'Home page' });
-} // for testing
-
-
+//  Creates a post
 exports.post_create_post = [
     upload.single('image'),
-    body('title').trim().isLength({ min: 1 }).escape().withMessage('Title must be specified.'),
-    body('tags.*').escape(),
-    body('summary').trim().isLength({ min: 1 }).escape().withMessage('Summary must be specified.'),
-    body('body.*').trim().isLength({ min: 1 }).escape().withMessage('Title must be specified.'),
+    body('title').trim().isLength({ min: 1 }).withMessage('Title must be specified.'),
+    body('tags.*'),
+    body('summary').trim().isLength({ min: 1 }).withMessage('Summary must be specified.'),
+    body('body.*').trim().isLength({ min: 1 }).withMessage('Title must be specified.'),
 
     (req, res, next) => {
-        
+        res.header("Access-Control-Allow-Origin", "http://localhost:8000/");
         // Extract the validation errors from a request.
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
             // There are errors. Render form again with sanitized values/errors messages.
-            res.render('test', { title: 'Error', errors: errors.array() });
+            res.send(400, "There was a problem posting your request: " + errors.array())
             return;
         }
         else {
-            var imagePath
-            try {
-                imagePath = {
-                    data: fs.readFileSync(path.join(appRoot + '/uploads/' + req.file.filename)),
-                    contentType: 'image/png'
+            post = new Posts;
+            let imageData;
+            // Post has thumnail, save it
+            if (req.file) {
+                try {
+                    imageData = {
+                        data: fs.readFileSync(path.join(appRoot + '/uploads/' + req.file.filename)),
+                        contentType: 'image/jpeg'
+                    }
+
+                } catch {
+                    imageData = ''
                 }
+                let imageName = req.file.filename;
+                post = new Posts(
+                    {
+                        title: req.body.title,
+                        tags: req.body.tags,
+                        summary: req.body.summary,
+                        body: req.body.body,
+                        date_of_post: Date.now(),
+                        thumbnail: imageData,
+                        thumbnail_name: imageName
+                    })
 
-            } catch {
-                imagePath = ''
             }
-
-            var post = new Posts(
+            // Failed to find a thumnail so proceed without one
+            else {
+                post = new Posts(
                 {
                     title: req.body.title,
                     tags: req.body.tags,
                     summary: req.body.summary,
                     body: req.body.body,
-                    date_of_post: Date.now(),
-                    thumbnail: imagePath
+                    date_of_post: Date.now()
                 })
+            }
             post.save(function (err) {
                 if (err) { return next(err); }
                 res.send(post._id)
@@ -127,6 +110,7 @@ exports.post_create_post = [
 
 ]
 
+// Deletes a post along with the thumbnail used
 exports.post_delete_post = function(req, res) {
     Posts.findById(req.params.id)
     .exec(function (err, results) {
@@ -134,7 +118,20 @@ exports.post_delete_post = function(req, res) {
         if (results) {
             Posts.findByIdAndRemove(req.params.id, function deletePost(err) {
                 if (err) { return next(err); }
-                //TODO, have uploaded image also deleted
+                fs.readdir(path.join(appRoot + '/uploads/'), function(err, files) {
+                    if (err) console.log("Error getting directory information.")
+                    // Go through the uploads files and delete the previous image.
+                    else {
+                      files.forEach(function(file) {
+                        if (file == results.thumbnail_name) { 
+                            fs.unlinkSync(path.join(appRoot + '/uploads/') + file, function(err) {
+                                if (err) console.log(err)
+                            })
+                        }
+                      })
+                    }
+                  })
+                
                 res.redirect('/')
             })
         } else {
@@ -146,31 +143,15 @@ exports.post_delete_post = function(req, res) {
 
 };
 
-exports.get_update_post = function(req, res) {
-    Posts.findById(req.params.id)
-    .exec(function (err, blogpost) {
-        if (err) { return next(err); }
-        if (blogpost) {
-            res.render('test', { title: 'Update page', post: blogpost});
-        } else {
-            res.status(404).json({message: "Post not found"})
-            res.status(404)
-            
-        }
-    }); 
-}
-
+// Update Post
 exports.post_update_post = [
 
     upload.single('image'),
-    body('title').trim().isLength({ min: 1 }).escape().withMessage('Title must be specified.'),
-    body('tags.*').escape(),
-    body('summary').trim().isLength({ min: 1 }).escape().withMessage('Summary must be specified.'),
-    body('body.*').trim().isLength({ min: 1 }).escape().withMessage('Title must be specified.'),
+    body('title').trim().isLength({ min: 1 }).withMessage('Title must be specified.'),
+    body('summary').trim().isLength({ min: 1 }).withMessage('Summary must be specified.'),
+    body('body.*').trim().isLength({ min: 1 }).withMessage('Title must be specified.'),
 
     (req, res, next) => {
-
-    
         // Extract the validation errors from a request.
         const errors = validationResult(req);
 
@@ -180,7 +161,7 @@ exports.post_update_post = [
             return;
         }
         else {
-            var imagePath
+            var imagePath;
             try {
                 imagePath = {
                     data: fs.readFileSync(path.join(appRoot + '/uploads/' + req.file.filename)),
@@ -191,7 +172,7 @@ exports.post_update_post = [
                 imagePath = ''
             }
 
-            var post = new Posts(
+            const post = new Posts(
                 {
                     title: req.body.title,
                     tags: req.body.tags,
@@ -201,19 +182,41 @@ exports.post_update_post = [
                     thumbnail: imagePath,
                     _id: req.params.id,
                 })
-                /* */
-            Posts.findByIdAndUpdate(req.params.id, post, {}, function (err, thepost) {
-                if (err) { return next(err); }
-                res.send(thepost)
-            });
+            // We run find by id to find the old thumbnail and remove it.
+            Posts.findById(req.params.id).exec(function (err, results) {
+                if(err) console.error(err)
+                // Update post
+                Posts.findByIdAndUpdate(req.params.id, post, {}, function (err, thepost) {
+                    if (err) { return next(err); }
+                    fs.readdir(path.join(appRoot + '/uploads/'), function(err, files) {
+                        if (err) console.log("Error getting directory information.")
+                        // Go through the uploads files and delete the previous image.
+                        else {
+                            files.forEach(function(file) {
+                                if (file == results.thumbnail_name) { 
+                                    fs.unlinkSync(path.join(appRoot + '/uploads/') + file, function(err) {
+                                        if (err) console.log(err)
+                                    })
+                                }
+                            })
+                        }
+                    })
+                    res.send(thepost)
+                });
+            })
 
         }
    }
-
 ]
 
+//  Recent posts for sidebar
+exports.get_recents_sidebar = function(req, res) {
+    Posts.find({}, 'title')
+    .limit(4)
+    .sort({"title": -1})
+    .exec(function (err, results) {
+        res.status(200)
+        res.send(results)
+    })
 
-
-
-
-
+}

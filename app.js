@@ -1,31 +1,31 @@
-var createError = require('http-errors');
 var express = require('express');
+var createError = require('http-errors');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var dotenv = require('dotenv')
 var cors = require('cors')
 var session = require('express-session');
 
 
-var indexRouter = require('./routes/index');
-var postsRouter = require('./routes/postsRoute');
+var postsRouter = require('./routes/postsRoutes');
+var imageRouter = require('./routes/imageRoutes');
+var loginRouter = require('./routes/loginRoutes');
 
 var app = express();
 
-var path = require('path');
+// Used to determine what the root of the directory is
 global.appRoot = path.resolve(__dirname);
 
-//dotenv config
-dotenv.config()
+// Add a list of allowed origins.
+// If you have more origins you would like to add, you can add them to the array below.
+const corsOption = {
+  origin: 'http://localhost:8000',
+  optionsSuccessStatus: 200,
+  credentials: true
+};
 
-app.use(cors());
-
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-
+// Server setup
+app.use(cors(corsOption));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -33,11 +33,10 @@ app.use(cookieParser());
 app.use(session({secret: "fb!ywefjh3v908#"}));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+// Routes
 app.use('/api', postsRouter);
-
-
-
+app.use('/api', imageRouter);
+app.use('/api', loginRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -49,10 +48,7 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  res.send(500, "There was an error: " + err)
 });
 
 module.exports = app;
