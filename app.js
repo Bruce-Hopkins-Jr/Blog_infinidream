@@ -10,6 +10,7 @@ var session = require('express-session');
 var postsRouter = require('./routes/postsRoutes');
 var imageRouter = require('./routes/imageRoutes');
 var loginRouter = require('./routes/loginRoutes');
+const { error } = require('console');
 
 var app = express();
 
@@ -48,7 +49,8 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-  res.status(500).send( "There was an error: " + err)
+  res.status(500).send("There was an error: " + err)
+  console.error("There was an error: " + err)
 });
 
 module.exports = app;
