@@ -53,7 +53,7 @@ exports.post_create_post = [
     body('body.*').trim().isLength({ min: 1 }).withMessage('Title must be specified.'),
 
     (req, res, next) => {
-        res.header("Access-Control-Allow-Origin", "http://localhost:8000/");
+        res.header("Access-Control-Allow-Origin", "http://blog.infinidream.net/"); // * important
         // Extract the validation errors from a request.
         const errors = validationResult(req);
 
