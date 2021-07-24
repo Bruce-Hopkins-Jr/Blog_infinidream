@@ -20,7 +20,7 @@ global.appRoot = path.resolve(__dirname);
 // Add a list of allowed origins.
 // If you have more origins you would like to add, you can add them to the array below.
 const corsOption = {
-  origin: 'http://localhost:8000',
+  origin: '"http://blog.infinidream.net/',
   optionsSuccessStatus: 200,
   credentials: true
 };
