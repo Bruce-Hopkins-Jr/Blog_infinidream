@@ -10,17 +10,16 @@ var session = require('express-session');
 var postsRouter = require('./routes/postsRoutes');
 var imageRouter = require('./routes/imageRoutes');
 var loginRouter = require('./routes/loginRoutes');
-const { error } = require('console');
 
 var app = express();
-
+require('dotenv').config()
 // Used to determine what the root of the directory is
 global.appRoot = path.resolve(__dirname);
 
 // Add a list of allowed origins.
 // If you have more origins you would like to add, you can add them to the array below.
 const corsOption = {
-  origin: 'http://blog.infinidream.net',
+  origin: process.env.ORIGIN,
   optionsSuccessStatus: 200,
   credentials: true
 };
