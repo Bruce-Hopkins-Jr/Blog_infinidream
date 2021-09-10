@@ -213,7 +213,7 @@ exports.post_update_post = [
 exports.get_recents_sidebar = function(req, res) {
     Posts.find({}, 'title')
     .limit(4)
-    .sort({"title": -1})
+    .sort({_id: -1})
     .exec(function (err, results) {
         res.status(200)
         res.send(results)
