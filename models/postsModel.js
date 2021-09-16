@@ -8,7 +8,7 @@ var PostsSchema = new Schema(
     title: {type: String, required: true, maxlength: 100},
     tags: [String], //array of strings
     summary: {type: String},
-    body: [String],
+    body: {type: String},
     thumbnail: { data: Buffer, contentType: String},
     thumbnail_name: {type: String},
     date_of_post: {type: Date}, 

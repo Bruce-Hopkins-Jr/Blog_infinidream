@@ -50,7 +50,7 @@ exports.post_create_post = [
     body('title').trim().isLength({ min: 1 }).withMessage('Title must be specified.'),
     body('tags.*'),
     body('summary').trim().isLength({ min: 1 }).withMessage('Summary must be specified.'),
-    body('body.*').trim().isLength({ min: 1 }).withMessage('Title must be specified.'),
+    body('body').trim().isLength({ min: 1 }).withMessage('Body must be specified.'),
 
     (req, res, next) => {
         res.header("Access-Control-Allow-Origin", "http://blog.infinidream.net/"); // * important
@@ -148,8 +148,9 @@ exports.post_update_post = [
 
     upload.single('image'),
     body('title').trim().isLength({ min: 1 }).withMessage('Title must be specified.'),
+    body('tags.*'),
     body('summary').trim().isLength({ min: 1 }).withMessage('Summary must be specified.'),
-    body('body.*').trim().isLength({ min: 1 }).withMessage('Title must be specified.'),
+    body('body').trim().isLength({ min: 1 }).withMessage('body must be specified.'),
 
     (req, res, next) => {
         // Extract the validation errors from a request.
