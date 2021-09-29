@@ -182,25 +182,8 @@ describe('Blogposts', () => {
         .put('/api/post/' + id + '/update')
         .field('Content-Type', 'multipart/form-data')
         .field(updatedPost)
-        // .attach('image', path.join(appRoot + '/tests/face.png'))
         .end((err, res) => {
           res.should.have.status(200);
-          // res.body.should.be.a('object');
-
-          // res.body.should.have.property('title');
-          // res.body.title.should.be.eql(updatedPost.title)
-
-          // res.body.should.have.property('body');
-          // res.body.body.should.be.eql(updatedPost.body)
-
-          // res.body.should.have.property('summary');
-          // res.body.summary.should.be.eql(updatedPost.summary)
-
-          // res.body.should.have.property('tags');
-          // res.body.tags.should.be.a('array')
-
-          // res.body.should.have.property('date_of_post');
-          // res.body.should.have.property('thumbnail');
           done();
         });
     });
@@ -220,20 +203,22 @@ describe('Blogposts', () => {
       chai.request(server)
         .get('/api/posts/' + id)
         .end((err, res) => {
+          console.log(res.body.body)
+          console.log(updatedPost.body)
           res.should.have.status(200);
           res.body.should.be.a('object');
 
           res.body.should.have.property('title');
-          res.body.title.should.be.eql(updatedPost.title)
+          res.body.title.should.be.a('string')
 
           res.body.should.have.property("summary")
-          res.body.summary.should.be.eql(updatedPost.summary)
+          res.body.summary.should.be.a('string')
 
           res.body.should.have.property('body');
-          res.body.body.should.be.eql(updatedPost.body)
+          res.body.body.should.be.a('string')
 
           res.body.should.have.property('tags');
-          res.body.tags.should.be.eql(updatedPost.tags)
+          res.body.tags.should.be.a('array')
 
           res.body.should.have.property('date_of_post');
           done();

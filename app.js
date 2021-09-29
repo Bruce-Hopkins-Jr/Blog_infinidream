@@ -4,7 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors')
-var session = require('express-session');
+var session = require('cookie-session');
 
 
 var postsRouter = require('./routes/postsRoutes');
@@ -19,7 +19,7 @@ global.appRoot = path.resolve(__dirname);
 // Add a list of allowed origins.
 // If you have more origins you would like to add, you can add them to the array below.
 const corsOption = {
-  origin: process.env.ORIGIN,
+  origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3000': process.env.ORIGIN,
   optionsSuccessStatus: 200,
   credentials: true
 };
@@ -27,8 +27,7 @@ const corsOption = {
 // Server setup
 app.use(cors(corsOption));
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+npapp.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(session({secret: process.env.ORIGIN}));
 app.use(express.static(path.join(__dirname, 'public')));

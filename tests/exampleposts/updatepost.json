@@ -2,5 +2,5 @@
     "title": "Actually this is the best title ever",
     "tags": ["React", "that"], 
     "summary": "This post is really cool you and it is updated",
-    "body": ["This is a lot of information", "This is code", "This is an image", "Leave me alone I am playing minecraft", "This is yet another paragraph"]
+    "body": "This is a lot of information \n This is // code \n This is an image "
 } 
