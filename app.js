@@ -24,13 +24,10 @@ const corsOption = {
   credentials: true
 };
 
-console.log(corsOption)
-
 // Server setup
 app.use(cors(corsOption));
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+npapp.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(session({secret: process.env.ORIGIN}));
 app.use(express.static(path.join(__dirname, 'public')));
