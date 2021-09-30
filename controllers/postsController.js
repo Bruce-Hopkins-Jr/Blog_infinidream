@@ -59,7 +59,7 @@ exports.post_create_post = [
 
         if (!errors.isEmpty()) {
             // There are errors. Render form again with sanitized values/errors messages.
-            res.send(400, "There was a problem posting your request: " + errors.array())
+            res.status(400).send("There was a problem posting your request: " + errors.array())
             return;
         }
         else {
