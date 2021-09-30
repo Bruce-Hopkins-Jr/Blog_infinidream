@@ -27,7 +27,7 @@ const corsOption = {
 // Server setup
 app.use(cors(corsOption));
 app.use(logger('dev'));
-npapp.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(session({secret: process.env.ORIGIN}));
 app.use(express.static(path.join(__dirname, 'public')));
