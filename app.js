@@ -24,7 +24,6 @@ const corsOption = {
   credentials: true
 };
 
-console.log(corsOption)
 
 // Server setup
 app.use(cors(corsOption));
