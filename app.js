@@ -24,11 +24,9 @@ const corsOption = {
   credentials: true
 };
 
-
 // Server setup
 app.use(cors(corsOption));
 app.use(logger('dev'));
-app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(session({secret: process.env.ORIGIN}));
