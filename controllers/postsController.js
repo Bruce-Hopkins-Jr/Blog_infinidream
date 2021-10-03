@@ -118,20 +118,6 @@ exports.post_delete_post = function(req, res) {
         if (results) {
             Posts.findByIdAndRemove(req.params.id, function deletePost(err) {
                 if (err) { return next(err); }
-                fs.readdir(path.join(appRoot + '/uploads/'), function(err, files) {
-                    if (err) console.log("Error getting directory information.")
-                    // Go through the uploads files and delete the previous image.
-                    else {
-                      files.forEach(function(file) {
-                        if (file == results.thumbnail_name) { 
-                            fs.unlinkSync(path.join(appRoot + '/uploads/') + file, function(err) {
-                                if (err) console.log(err)
-                            })
-                        }
-                      })
-                    }
-                  })
-                
                 res.redirect('/')
             })
         } else {
