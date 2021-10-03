@@ -22,7 +22,7 @@ router.post('/post/create', loginController.validateLogin, postsController.post_
 router.delete('/post/:id/delete', loginController.validateLogin,  postsController.post_delete_post);
 
 // Post update post
-router.put('/post/:id/update', loginController.validateLogin,  postsController.post_update_post)
+router.post('/post/:id/update', loginController.validateLogin,  postsController.post_update_post)
 
 // Gets recent posts for sidebar
 router.get('/recent-posts',  postsController.get_recents_sidebar)
