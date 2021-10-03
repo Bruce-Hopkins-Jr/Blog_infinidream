@@ -12,3 +12,9 @@ This is not the final version. I will be migrating to Next.js in version 2.0, wi
 1. Create config directory and adminInfo.json file within it. adminInfo must have properties user and password
 
 2. Create uploads folder. 
+
+## Versions
+
+### 1.1.1
+
+ - Fixes date formatting bug

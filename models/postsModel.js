@@ -37,34 +37,32 @@ PostsSchema
 });
 
 function checkMonth(dateOfMonth) {
-  var nameOfMonth = "";
   switch(dateOfMonth) {
     case 0:
-      nameOfMonth = "Jan"
+      return "Jan"
     case 1:
-      nameOfMonth = "Feb"
+      return "Feb"
     case 2:
-      nameOfMonth = "Mar"
+      return "Mar"
     case 3:
-      nameOfMonth = "Apr"
+      return "Apr"
     case 4:
-      nameOfMonth = "May"
+      return "May"
     case 5:
-      nameOfMonth = "June"
+      return "June"
     case 6:
-      nameOfMonth = "July"
+      return "July"
     case 7:
-      nameOfMonth = "Aug"
+      return "Aug"
     case 8:
-      nameOfMonth = "Sept"
+      return "Sept"
     case 9:
-      nameOfMonth = "Oct"
+      return "Oct"
     case 10:
-      nameOfMonth = "Nov"
+      return "Nov"
     case 11:
-      nameOfMonth = "Dec"  
+      return "Dec"  
   }
-  return nameOfMonth;
 }
 
 PostsSchema
