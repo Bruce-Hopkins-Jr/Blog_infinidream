@@ -183,7 +183,7 @@ describe('Blogposts', () => {
         .field('Content-Type', 'multipart/form-data')
         .field(updatedPost)
         .end((err, res) => {
-          res.should.have.status(200);
+          res.should.have.status(201);
           done();
         });
     });

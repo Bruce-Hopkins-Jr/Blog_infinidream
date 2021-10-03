@@ -184,15 +184,10 @@ exports.post_update_post = [
                     _id: req.params.id,
                 })
             // We run find by id to find the old thumbnail and remove it.
-            Posts.findById(req.params.id).exec(function (err, results) {
-                if(err) console.error(err)
-                // Update post
-                Posts.findByIdAndUpdate(req.params.id, post, {}, function (err, thepost) {
-                    if (err) { return next(err); }
-                    res.send(thepost)
-                });
-            })
-
+            Posts.findByIdAndUpdate(req.params.id, post, {}, function (err, thepost) {
+                if (err) { return next(err); }
+                res.status(201).send(thepost)
+            });
         }
    }
 ]
