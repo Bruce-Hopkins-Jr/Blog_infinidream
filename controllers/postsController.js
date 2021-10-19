@@ -44,6 +44,15 @@ exports.get_post = function(req, res, next) {
     }); 
 
 }
+
+exports.get_previous_post = function(req, res, next) {
+    /*
+        Use the current id
+        find the last blog post
+        send the title
+    */
+}
+
 //  Creates a post
 exports.post_create_post = [
     upload.single('image'),
