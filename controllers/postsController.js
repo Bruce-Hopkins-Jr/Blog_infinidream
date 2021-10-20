@@ -45,12 +45,18 @@ exports.get_post = function(req, res, next) {
 
 }
 
+// Get previous post
 exports.get_previous_post = function(req, res, next) {
-    /*
-        Use the current id
-        find the last blog post
-        send the title
-    */
+    Posts.find({_id: {$lt:req.params.id}})
+    .sort({_id: -1})
+    .limit(1)
+    .exec((err, results) => {
+        if (err) return next(err)
+        else {
+            console.log("working")
+            res.send(results)
+        }
+    })
 }
 
 //  Creates a post

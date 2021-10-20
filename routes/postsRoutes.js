@@ -27,4 +27,6 @@ router.put('/post/:id/update', loginController.validateLogin,  postsController.p
 // Gets recent posts for sidebar
 router.get('/recent-posts',  postsController.get_recents_sidebar)
 
+router.get('/previous-post/:id',  postsController.get_previous_post)
+
 module.exports = router;
