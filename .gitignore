@@ -6,6 +6,4 @@ uploads/*
 /config
 /.vscode
 package-lock.json
-.env
-
 .env.backup
