@@ -35,7 +35,7 @@ exports.validateLogin = function(req, res, next) {
     res.status(403).json({message: "You are not logged in"})
 }
 
-// Checks if the user is logged in. It works with validasales@budgetchampteLogin. Sends a status 200 if validateLogin works.
+// Checks if the user is logged in. It works with validateLogin. Sends a status 200 if validateLogin works.
 exports.confirmLogin = function(req, res, next) {
     res.status(200)
     res.send("User is logged in")
