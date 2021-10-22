@@ -7,3 +7,4 @@ uploads/*
 /.vscode
 package-lock.json
 .env.backup
+.env
