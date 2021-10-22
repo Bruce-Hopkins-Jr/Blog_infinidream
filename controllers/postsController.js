@@ -47,14 +47,13 @@ exports.get_post = function(req, res, next) {
 
 // Get previous post
 exports.get_previous_post = function(req, res, next) {
-    Posts.find({_id: {$lt:req.params.id}})
+    Posts.find({_id: {$lt:req.params.id}}, ["_id", "title"])
     .sort({_id: -1})
     .limit(1)
     .exec((err, results) => {
         if (err) return next(err)
         else {
-            console.log("working")
-            res.send(results)
+            res.send(results[0])
         }
     })
 }
