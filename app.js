@@ -37,6 +37,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', postsRouter);
 app.use('/api', imageRouter);
 app.use('/api', loginRouter);
+app.use('/', (req, res, next) => {
+  res
+  .status(200)
+  .send("Server is live")
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
